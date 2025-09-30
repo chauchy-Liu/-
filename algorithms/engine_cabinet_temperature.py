@@ -46,7 +46,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     target_temperature_df = pn_data[pn_data['assetId']==assetId]
     # 再与目标风机做对比
     final_df = target_temperature_df
-    threValue = 5
+    threValue = 100
     final_df['result'] = np.abs(target_temperature_df['WNAC.TemNacelleCab'] - mean_temperature) > threValue
     pn_data = pn_data[~pn_data.index.duplicated()]
     #数据展示

@@ -3,7 +3,7 @@ import pandas as pd
 from tqdm import tqdm_notebook as tqdm
 
 import matplotlib.pyplot as plt
-# plt.switch_backend('agg')
+plt.switch_backend('agg')
 
 from darts import TimeSeries, concatenate
 from darts.dataprocessing.transformers import Scaler

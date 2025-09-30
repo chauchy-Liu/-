@@ -4,34 +4,34 @@
 """
 
 # 应用风场的assetId
-Wind_Farm = 'duMC5TRo' #江西
+Wind_Farm = 'FeKTW6sk' #吉电
 
 
 
 #模块附加区分名
-extraModelName = None #'B' #江西保留
+extraModelName = 'B'
 
 # 告警推送url
-# Alarm_Push_Url = 'https://xxxx/warn/receiveWarn'
-# Alarm_Push_Url = 'http://172.16.3.232:9000/api-smartisolar/sub-warn/warn/receiveWarnInfo'
-Alarm_Push_Url = 'http://10.67.68.188:9001/api/v1/standardAlarmGateway/attributes'
+# Alarm_Push_Url = 'https://xxxx/warn/receiveWarn' 10.67.68.188:9001 or 168.0.0.251:9001
+Alarm_Push_Url = 'http://10.67.68.188:9001/api-smartisolar/sub-warn/warn/receiveWarnInfo'
+# Alarm_Push_Url = 'http://10.67.68.188:9001/api/v1/standardAlarmGateway/attributes'
 
 # 并网转速
-Rotspd_Connect = 7.5
+Rotspd_Connect = 1100.0 
 # 额定转速
-Rotspd_Rate = 14.5
+Rotspd_Rate = 1750.0 
 # 转矩控制系数
 
 # 最小桨距角
 Pitch_Min = 0.0
 
 # 并网状态
-state = 6
+state = 120
 
 # 合计风速
 fitWindSpd = [3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13]
 # 合计功率
-fitPrWt = [63.62, 117.74, 188.03, 268.94, 370.20, 493.22, 640.86, 814.65, 1017.48, 1251.46, 1518.81, 1812.87, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020]
+fitPrWt = [165.6, 311.7, 513.0, 762.2, 1059.0, 1414.3, 1838.5, 2337.5, 2915.7, 3568.9, 4125.8, 4501.9, 4732.7, 4860.9, 4933.1, 4974.3, 5000, 5000, 5000, 5000, 5000]
 
 
 AccessKey = '3f207c85-64b4-476c-a23d-64624bbc0669'
@@ -44,21 +44,21 @@ GW_Url = 'https://ag-spic1.eniot.io'
 ALARM_PUSH_MODE = 'http'
 
 # 数据展示存放目录
-Path = '/opt/app/wind-algorithm-model/fileData/'#部署  '/opt/app/wind-algorithm-model/fileData/'#'./result/Display/'#/opt/app/wind-algorithm-model/fileData
-# Path = './result/Display/'# 调试  /opt/app/wind-algorithm-model/fileData/'#'./result/Display/'#/opt/app/wind-algorithm-model/fileData
+Path = '/opt/app/wind-algorithm-model/fileData/'#'/opt/app/wind-algorithm-model/fileData/'#'./result/Display/'#/opt/app/wind-algorithm-model/fileData
+# Path = './result/Display/'#'/opt/app/wind-algorithm-model/fileData/'#'./result/Display/'#/opt/app/wind-algorithm-model/fileData
 
 # 数据库配置
-DB_HOST = '127.0.0.1'#'172.17.11.95' #部署
-# DB_HOST = '172.17.11.95'#'172.17.11.95' #'127.0.0.1' 调试
+DB_HOST = '127.0.0.1'#'172.17.11.95' #'127.0.0.1'
+# DB_HOST = '172.17.11.95'#'172.17.11.95' #'127.0.0.1'
 
 
-DB_USERNAME = 'iwind'#'iwind2' 'iwind' 部署
-# DB_USERNAME = 'iwind2'#'iwind2' 调试
+DB_USERNAME = 'iwind'#'iwind2'
+# DB_USERNAME = 'iwind2'#'iwind2'
 
-# 想自己的服务器推送警告
-AL_PUSH_URL_SELF = "http://127.0.0.1:8088/iwind-edge-api-jx/base/DataAlarm/addAlarm"
+# 向自己的服务器推送警告
+AL_PUSH_URL_SELF = "http://127.0.0.1:8088/iwind-edge-api/base/DataAlarm/addAlarm"
 # 向自己的服务器推送超过阈值
-OV_PUSH_URL_THR = "" #"http://127.0.0.1:8088/iwind-edge-api-jx/base/DataAlarm/upPnState"
+OV_PUSH_URL_THR = "" #"http://127.0.0.1:8088/iwind-edge-api/base/DataAlarm/upPnState"
 
 DB_PORT = 3306
 DB_PASSWORD = 'IotPlatform!v1.0'
@@ -97,7 +97,7 @@ POSITION_CONFIG = {
    'WTRM.TemGeaLSND': "齿轮箱内部",#齿轮箱低速轴非驱动端轴承温度
    'WTRM.TemGeaMSND': "齿轮箱内部",#齿轮箱高速轴非驱动端轴承温度
    'WTRM.TemGeaOil': "齿轮箱内部",#齿轮箱油池温度
-   'WNAC.TemNacelleCab': "机舱控制柜",#机舱控制柜温
+   'WNAC.TemNacelleCab': "机舱控制柜",#机舱控制柜温度
    'WNAC.TemNacelle': "机舱内",#舱内温度	
    'WGEN.TemGenNonDE': "发电机",#发电机非驱动端轴承温度	
    'WGEN.TemGenDriEnd': "发电机",#发电机驱动端轴承温度	
@@ -116,7 +116,7 @@ POSITION_CONFIG = {
 }
 
 # 执行时排除的模型列表
-EXCEPT_MODLES = ["a", "b", "c",'chilunxiang_disu_zhoucheng_temperature','chilunxiang_gaosu_zhoucheng_temperature','chilunxiang_sanre', 'generator_houzhoucheng_temperature','generator_qianzhoucheng_temperature','generator_zhuzhou_rpm_not_balance','oar_electric_capacity_temperature','oar_machine_temperature'] #"tatong_qingjiao", ,  "luoshuansongdong", "hongwaicewen", 'WROT.Blade1Position','WNAC.WindSpeed', ,'chuandonglian'
+EXCEPT_MODLES = ["a", "b", "c"] #"tatong_qingjiao", ,  "luoshuansongdong", "hongwaicewen", 'WROT.Blade1Position','WNAC.WindSpeed',
 # EXCEPT_MODLES = ['chilunxiang_disu_zhoucheng_temperature',
 #                  'chilunxiang_gaosu_zhoucheng_temperature',
 #                  'chilunxiang_sanre',
@@ -140,7 +140,7 @@ scheduleConfig = {
 
 # turbine number setup
 turbineConfig = {
-    'turbineNameList' : ["13#","14#","15#","16#","17#"]
+    'turbineNameList' : None #["#01","#10"]
 }
 
 #各算法测点配置
@@ -163,11 +163,11 @@ algConfig = {
     'blade_freeze':{
         'name' : '叶片结冰',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WNAC.TemOut', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WGEN.GenActivePW','WTRM.RotorSpd', 'WYAW.YawOpWind5sAVG'],
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_points' :['WNAC.TemOut', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WGEN.GenActivePW','WGEN.GenSpd', 'WTUR.SITURAI17'],
+        'ai_rename' :  {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
-        'private_points' : {"SPIC_JX_CMS_Blade":['BLD_FREEZE_FACTOR']},#江西保留
+        'private_points' : {"SPIC_ZD_CMS_Blade":['BLD_FREEZE_FACTOR']},#保留
         'time_duration' : '1D',
         'resample_interval' : '1m', # 原始数据采样间隔
         'error_data_time_duration' : '30m',
@@ -179,8 +179,8 @@ algConfig = {
     'capacity_reduction':{
         'name' : '风机降容预警',
         # 把所需测点定义到每个算法里
-        "ai_points" : ['WNAC.WindSpeed', 'WROT.Blade1Position', 'WGEN.GenActivePW','WTRM.RotorSpd'],
-        "ai_rename" : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        "ai_points" : ['WNAC.WindSpeed', 'WROT.Blade1Position', 'WGEN.GenActivePW','WGEN.GenSpd'],
+        "ai_rename" : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         "di_points" : ['WTUR.TurbineSts'],
         "general_points" : ['WTUR.TurbineAIStatus'],
         "private_points" : {},
@@ -188,14 +188,14 @@ algConfig = {
         "resample_interval" : '10m', # 原始数据采样间隔
         "error_data_time_duration" : '30m',
         "need_all_turbines" : False,
-        'store_file' : True, 
+        "store_file" : True, 
         'threshold': {}
     },
     'chilunxiang_disu_zhoucheng_temperature':{
         "name" : '齿轮箱低速轴轴承温度异常',
         # 把所需测点定义到每个算法里
-        "ai_points" : ['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WTRM.RotorSpd','WTRM.TemMainBearing2'],
-        "ai_rename" : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd', 'WTRM.TemMainBearing2':'WTRM.TemGeaLSND'},
+        "ai_points" : ['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WTRM.TemGeaOil','WGEN.GenSpd','WTRM.TemGeaLSND','WNAC.TemOut'],
+        "ai_rename" :  {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         "di_points" : ['WTUR.TurbineSts'],
         "general_points" : ['WTUR.TurbineAIStatus'],
         "private_points" : {},
@@ -203,14 +203,14 @@ algConfig = {
         "resample_interval" : '10m', # 原始数据采样间隔
         "error_data_time_duration" : '500m', # 异常数据持续多长时间报警
         "need_all_turbines" : False, # 是否需要场站全量数据做判断
-        'store_file' : True, 
+        "store_file" : True, 
         'threshold': {}
     },
     'chilunxiang_gaosu_zhoucheng_temperature':{
         "name" : '齿轮箱高速轴轴承温度异常',
         # 把所需测点定义到每个算法里
-        "ai_points" : ['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WTRM.RotorSpd','WTRM.TemMainBearing'],#WTRM.TemGeaMSDE,'WGEN.GenSpdInstant','WTRM.TemGeaOil','WTRM.TemGeaMSND'
-        "ai_rename" : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd', 'WTRM.TemMainBearing':'WTRM.TemGeaMSND'},
+        "ai_points" : ['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WTRM.TemGeaOil','WGEN.GenSpd','WTRM.TemGeaMSND','WNAC.TemOut'],#WTRM.TemGeaMSDE,'WGEN.GenSpdInstant','WTRM.TemGeaOil','WTRM.TemGeaMSND'
+        "ai_rename" : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         "di_points" : ['WTUR.TurbineSts','WTUR.TurbineSts_Map'],
         "general_points" : ['WTUR.TurbineAIStatus'],
         "private_points" : {},
@@ -218,14 +218,14 @@ algConfig = {
         "resample_interval" : '10m', # 原始数据采样间隔
         "error_data_time_duration" : '500m', # 异常数据持续多长时间报警
         "need_all_turbines" : False, # 是否需要场站全量数据做判断
-        'store_file' : True, 
+        "store_file" : True, 
         'threshold': {}
     },
     'chilunxiang_sanre':{
         'name' : '齿轮箱散热异常',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WROT.Blade1Position', 'WNAC.WindSpeed', 'WGEN.GenActivePW', 'WNAC.TemNacelle', 'WTRM.RotorSpd', 'WTRM.TemGeaOil'], #齿轮箱油池温度、舱内温度
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_points' : ['WROT.Blade1Position', 'WNAC.WindSpeed', 'WGEN.GenActivePW', 'WNAC.TemNacelle', 'WGEN.GenSpd', 'WTRM.TemGeaOil','WNAC.TemOut'], #齿轮箱油池温度、舱内温度
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -240,7 +240,7 @@ algConfig = {
         'name' : '机舱柜温度异常',
         # 把所需测点定义到每个算法里
         'ai_points' : ['WNAC.TemNacelleCab'], #, 'WNAC.TemOut', 'WNAC.TemNacelle'] # 机舱控制柜温度 环境温度（舱外温度） 机舱温度（舱内温度）
-        'ai_rename' : {},
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : [],
         'general_points' : [],
         'private_points' : {},
@@ -249,13 +249,13 @@ algConfig = {
         'error_data_time_duration' : '500m',
         'need_all_turbines' : False,
         'store_file' : True, 
-        'threshold': {}
+        'threshold': {} 
     },
     'engine_env_temperature':{
         'name' : '机舱环境温度异常',
         # 把所需测点定义到每个算法里
         'ai_points' : ['WNAC.TemNacelle'], # 机舱温度（舱内温度） 'WNAC.TemOut'
-        'ai_rename' : {},
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : [],
         'general_points' : [],
         'private_points' : {},
@@ -274,10 +274,11 @@ algConfig = {
             'WNAC.WindSpeed',
             'WGEN.GenActivePW',
             'WNAC.TemNacelle',
-            'WTRM.RotorSpd',
-            'WGEN.TemGenNonDE'
-            ], # 发电机非驱动端轴承温度 机舱温度（舱内温度）    'WTUR.SETURAI57',
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+            'WGEN.GenSpd',
+            'WGEN.TemGenNonDE',
+            'WNAC.TemOut'
+        ], # 发电机非驱动端轴承温度 机舱温度（舱内温度）    'WTUR.SETURAI57',
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -296,10 +297,12 @@ algConfig = {
             'WNAC.WindSpeed',
             'WGEN.GenActivePW',
             'WNAC.TemNacelle',
-            'WTRM.RotorSpd',
-            'WGEN.TemGenDriEnd'
+            'WGEN.GenSpd',
+            'WGEN.TemGenDriEnd',
+            'WNAC.TemNacelle',
+            'WNAC.TemOut'
             ],
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -313,8 +316,8 @@ algConfig = {
     'generator_raozu_not_balance':{
         'name' : '发电机定子线圈温度三相不平衡',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WGEN.GenSenTmp1','WGEN.GenSenTmp2','WGEN.GenSenTmp3'], # 发电机定子U相线圈温度 发电机定子V相线圈温度 发电机定子W相线圈温度 环境温度（舱外温度）
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd', 'WGEN.GenSenTmp1':'WGEN.TemGenStaU', 'WGEN.GenSenTmp2':'WGEN.TemGenStaV', 'WGEN.GenSenTmp3':'WGEN.TemGenStaW'},
+        'ai_points' : ['WGEN.TemGenStaU','WGEN.TemGenStaV','WGEN.TemGenStaW'], # 发电机定子U相线圈温度 发电机定子V相线圈温度 发电机定子W相线圈温度 环境温度（舱外温度）
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : [],
         'general_points' : [],
         'private_points' : {},
@@ -328,8 +331,8 @@ algConfig = {
     'generator_temperature':{
         'name' : '发电机定子绕组温度异常',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW', 'WGEN.GenSenTmp1', 'WGEN.GenSenTmp2', 'WGEN.GenSenTmp3','WNAC.TemOut','WNAC.TemNacelle','WTRM.RotorSpd'], # 发电机定子U相线圈温度 发电机定子V相线圈温度 发电机定子W相线圈温度 环境温度（舱外温度） 'WGEN.LHDLGENAI31','WGEN.LHDLGENAI103'
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd', 'WGEN.GenSenTmp1':'WGEN.TemGenStaU', 'WGEN.GenSenTmp2':'WGEN.TemGenStaV', 'WGEN.GenSenTmp3':'WGEN.TemGenStaW'},
+        'ai_points' :['WROT.Blade1Position','WNAC.WindSpeed','WGEN.GenActivePW', 'WGEN.TemGenStaU', 'WGEN.TemGenStaV', 'WGEN.TemGenStaW','WNAC.TemOut','WNAC.TemNacelle','WGEN.GenSpd'], # 发电机定子U相线圈温度 发电机定子V相线圈温度 发电机定子W相线圈温度 环境温度（舱外温度） 'WGEN.LHDLGENAI31','WGEN.LHDLGENAI103'
+        'ai_rename' :  {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -343,8 +346,8 @@ algConfig = {
     'generator_zhuanju_kongzhi':{
         'name' : '转矩控制异常',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WGEN.GenActivePW','WTRM.RotorSpd', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WNAC.TemOut'],
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_points' :['WGEN.GenActivePW','WGEN.GenSpd', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WNAC.TemOut'],
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -358,8 +361,8 @@ algConfig = {
     'generator_zhuzhou_rpm_not_balance':{
         'name' : '主轴转速和发电机转速不平衡',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WGEN.GenSpd','WTRM.RotorSpd','WNAC.WindSpeed', 'WGEN.GenActivePW', 'WROT.Blade1Position'],
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection'},#, 'WTRM.RotorSpd':'WGEN.GenSpd'
+        'ai_points' : ['WGEN.GenSpd','WTRM.RotorSpd','WNAC.WindSpeed', 'WGEN.GenActivePW', 'WROT.Blade1Position', ],
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -377,8 +380,11 @@ algConfig = {
         'ai_rename' : {},
         'di_points' : [],
         'general_points' : [],
-        'private_points' : {"SPIC_JX_CMS_Transfer":['GBXHSSA1_RMS','GENDER1_RMS', 'MBA1_RMS']},#保留江西的, GBXHSSA1_RMS:齿轮箱高速轴轴向1（振动有效值）,GENDER1_RMS:发电机驱动端径向1（振动有效值）,MBA1_RMS:主轴轴承轴向1（振动有效值）	
+        'private_points' : {"SPIC_ZD_CMS_Transfer":['GBXHSSA1_RMS','GENDER1_RMS', 'MBA1_RMS']},#保留江西的, GBXHSSA1_RMS:齿轮箱高速轴轴向1（振动有效值）,GENDER1_RMS:发电机驱动端径向1（振动有效值）,MBA1_RMS:主轴轴承轴向1（振动有效值）	
         # modelId : "SPIC_ZD_CMS_Tower"
+        'time_duration' : '1D', #数据持续时间
+        'resample_interval' : '10m',#'10T' # 原始数据采样间隔
+        'error_data_time_duration' : '288m', #和resample_interval同单位
         'time_duration' : '1D', #数据持续时间
         'resample_interval' : '10m',#'10T' # 原始数据采样间隔
         'error_data_time_duration' : '288m', #和resample_interval同单位
@@ -447,7 +453,7 @@ algConfig = {
         'ai_rename' : {},
         'di_points' : [],
         'general_points' : [],
-        'private_points' : {"SPIC_JX_CMS_Transformer":['LOW_A_TMP','LOW_B_TMP','LOW_C_TMP']},#保留江西的
+        'private_points' : {"SPIC_ZD_CMS_Transformer":['LOW_A_TMP','LOW_B_TMP','LOW_C_TMP']},#保留江西的
         # modelId : "SPIC_ZD_CMS_Transformer"
         'time_duration' : '1h',
         'resample_interval' : '1m',#'10T' # 原始数据采样间隔
@@ -513,7 +519,7 @@ algConfig = {
         'ai_rename' : {},
         'di_points' : [],
         'general_points' : [],
-        'private_points' : {"SPIC_JX_CMS_Transformer":['LOW_A_TMP','LOW_B_TMP','LOW_C_TMP']},
+        'private_points' : {"SPIC_ZD_CMS_Transformer":['LOW_A_TMP','LOW_B_TMP','LOW_C_TMP']},
         'time_duration' : '1D',
         'resample_interval' : '10m',
         'error_data_time_duration' : '500m',
@@ -524,11 +530,11 @@ algConfig = {
     'jiegou_sunshang':{
         'name' : '塔筒结构损伤',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WGEN.GenActivePW','WTRM.RotorSpd', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WYAW.YawOpWind5sAVG'], #, 'WNAC.TemOut', 'WNAC.TemNacelle'] # 机舱控制柜温度 环境温度（舱外温度） 机舱温度（舱内温度）
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_points' : ['WGEN.GenActivePW','WGEN.GenSpd', 'WNAC.WindSpeed', 'WROT.Blade1Position', 'WTUR.SITURAI17'], #, 'WNAC.TemOut', 'WNAC.TemNacelle'] # 机舱控制柜温度 环境温度（舱外温度） 机舱温度（舱内温度）
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
-        'private_points' : {"SPIC_JX_CMS_Tower":['Vibration_Strength']},#保留江西的 , 'TOTTSK'
+        'private_points' : {"SPIC_ZD_CMS_Tower":['Vibration_Strength']},#保留江西的 , 'TOTTSK'
         'time_duration' : '1D',
         'resample_interval' : '10m', # 原始数据采样间隔
         'error_data_time_duration' : '288m',
@@ -590,7 +596,7 @@ algConfig = {
         'ai_rename' : {},
         'di_points' : [],
         'general_points' : [],
-        'private_points' : {"SPIC_JX_CMS_Bolt":['BLADE1_BLOT_ANGLE_1','BLADE1_BLOT_ANGLE_2','BLADE1_BLOT_ANGLE_3','BLADE1_BLOT_ANGLE_4','BLADE1_BLOT_ANGLE_5','BLADE1_BLOT_ANGLE_6','BLADE1_BLOT_ANGLE_7','BLADE1_BLOT_ANGLE_8',
+        'private_points' : {"SPIC_ZD_CMS_Bolt":['BLADE1_BLOT_ANGLE_1','BLADE1_BLOT_ANGLE_2','BLADE1_BLOT_ANGLE_3','BLADE1_BLOT_ANGLE_4','BLADE1_BLOT_ANGLE_5','BLADE1_BLOT_ANGLE_6','BLADE1_BLOT_ANGLE_7','BLADE1_BLOT_ANGLE_8',
         'BLADE2_BLOT_ANGLE_1','BLADE2_BLOT_ANGLE_2','BLADE2_BLOT_ANGLE_3','BLADE2_BLOT_ANGLE_4','BLADE2_BLOT_ANGLE_5','BLADE2_BLOT_ANGLE_6','BLADE2_BLOT_ANGLE_7','BLADE2_BLOT_ANGLE_8',
         'BLADE3_BLOT_ANGLE_1','BLADE3_BLOT_ANGLE_2','BLADE3_BLOT_ANGLE_3','BLADE3_BLOT_ANGLE_4','BLADE3_BLOT_ANGLE_5','BLADE3_BLOT_ANGLE_6','BLADE3_BLOT_ANGLE_7','BLADE3_BLOT_ANGLE_8',
         'TOWERL1_BLOT_ANGLE_1','TOWERL1_BLOT_ANGLE_2','TOWERL1_BLOT_ANGLE_3','TOWERL1_BLOT_ANGLE_4','TOWERL1_BLOT_ANGLE_5','TOWERL1_BLOT_ANGLE_6','TOWERL1_BLOT_ANGLE_7','TOWERL1_BLOT_ANGLE_8',
@@ -654,7 +660,7 @@ algConfig = {
                 }
             },
             "yujing":{
-                "threshold": {
+                "threshold":{
                     'BLADE1_BLOT_ANGLE_1': 5,
                     'BLADE1_BLOT_ANGLE_2': 5,
                     'BLADE1_BLOT_ANGLE_3': 5,
@@ -1288,7 +1294,6 @@ algConfig = {
                         "16": 5.6,
                         "17": 5.7
                     } 
-
                 }           
             }
         }
@@ -1296,8 +1301,8 @@ algConfig = {
     'oar_electric_capacity_temperature':{
         'name' : '变桨电容温度异常',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WROT.PtCapTemBl1','WROT.PtCapTemBl2', 'WROT.PtCapTemBl3', 'WROT.VolB1Cap', 'WROT.VolB2Cap','WROT.VolB3Cap',],# ,	'WROT.Blade1Position','WROT.Blade2Position','WROT.Blade3Position','WNAC.TemOut'] # 叶片1超级电容柜温度 叶片2超级电容柜温度 叶片3超级电容柜温度
-        'ai_rename' : {},
+        'ai_points' : ['WROT.TemPitchBat1','WROT.TemPitchBat2','WROT.TemPitchBat3', 'WROT.VolB1Cap', 'WROT.VolB2Cap','WROT.VolB3Cap',],# ,	'WROT.Blade1Position','WROT.Blade2Position','WROT.Blade3Position','WNAC.TemOut'] # 叶片1超级电容柜温度 叶片2超级电容柜温度 叶片3超级电容柜温度
+        'ai_rename' : {'WROT.TemPitchBat1': 'WROT.PtCapTemBl1', 'WROT.TemPitchBat2': 'WROT.PtCapTemBl2', 'WROT.TemPitchBat3': 'WROT.PtCapTemBl3'},
         'di_points' : [],
         'general_points' : [],
         'private_points' : {},
@@ -1357,8 +1362,8 @@ algConfig = {
     'pianhang_duifeng_buzheng':{
         'name' : '偏航对风不正',
         # 把所需测点定义到每个算法里
-        'ai_points' : ['WTRM.RotorSpd', 'WYAW.YawOpWind5sAVG', 'WNAC.WindDirection','WNAC.WindSpeed','WGEN.GenActivePW', 'WROT.Blade1Position'], #机舱与风向夹角 风向
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_points' : ['WTUR.SITURAI17', 'WNAC.WindDirection','WGEN.GenSpd','WNAC.WindSpeed','WGEN.GenActivePW', 'WROT.Blade1Position', 'WYAW.NacellePosition'], #机舱与风向夹角 风向
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts_Map','WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -1392,8 +1397,9 @@ algConfig = {
         'ai_rename' : {},
         'di_points' : [],
         'general_points' : [],
-        'private_points' : {"SPIC_JX_CMS_Tower":['TOTT','TOAT']},#保留江西的
+        'private_points' : {"SPIC_ZD_CMS_Tower":['TOTT','TOAT']},#保留江西的
         # modelId : "SPIC_ZD_CMS_Tower"
+        'nameMaps': {'TOTT':'塔顶倾斜角度','TOAT':'塔底倾斜角度'},
         'nameMaps': {'TOTT':'塔顶倾斜角度','TOAT':'塔底倾斜角度'},
         'time_duration' : '1h', #数据持续时间
         'resample_interval' : '1m',#'10T' # 原始数据采样间隔
@@ -1473,8 +1479,8 @@ algConfig = {
         'ai_points' : ['WNAC.WindSpeed',
             'WGEN.GenActivePW',
             'WROT.Blade1Position',
-            'WTRM.RotorSpd', 'WYAW.YawOpWind5sAVG', 'WNAC.WindDirection','WNAC.TemOut'], # 风速 发电机有功功率 风向
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+            'WGEN.GenSpd', 'WTUR.SITURAI17', 'WNAC.WindDirection', 'WNAC.TemOut'], # 风速 发电机有功功率 风向
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
@@ -1492,15 +1498,15 @@ algConfig = {
             'WNAC.WindSpeed',
             'WGEN.GenActivePW',
             'WROT.Blade1Position',
-            'WTRM.RotorSpd', 'WYAW.YawOpWind5sAVG', 'WNAC.WindDirection'
+            'WGEN.GenSpd', 'WTUR.SITURAI17', 'WNAC.WindDirection'
             ],
-        'ai_rename' : {'WYAW.YawOpWind5sAVG':'WNAC.WindVaneDirection', 'WTRM.RotorSpd':'WGEN.GenSpd'},
+        'ai_rename' : {'WTUR.SITURAI17':'WNAC.WindVaneDirection', 'WGEN.GenSpd':'WGEN.GenSpd'},
         'di_points' : ['WTUR.TurbineSts', 'WTUR.TurbineUnionSts'],
         'general_points' : ['WTUR.TurbineAIStatus'],
         'private_points' : {},
-        'time_duration' : '1D', # 取多长时间范围的数据做预测
+        'time_duration' : '14D', # 取多长时间范围的数据做预测
         'resample_interval' : '10m', # 原始数据采样间隔
-        'error_data_time_duration' : '120m', #'500m', # 异常数据持续多长时间报警
+        'error_data_time_duration' : '500m', #'500m', # 异常数据持续多长时间报警
         'need_all_turbines' : False, # 是否需要场站全量数据做判断
         'store_file' : True, 
         'threshold': {}
@@ -1512,12 +1518,11 @@ algConfig = {
         "ai_rename" : {},
         "di_points" : [],
         "general_points" : [],
-        "private_points" : {"SPIC_JX_CMS_Blade":["BLD_DEFECTZ_FACTOR"]}, #江西保留
+        "private_points" : {"SPIC_ZD_CMS_Blade":["BLD_DEFECTZ_FACTOR"]}, #江西保留
         "time_duration" : '1D',
         "resample_interval" : '10m', # 原始数据采样间隔
         "error_data_time_duration" : '500m',
         "need_all_turbines" : False,
-        # modelId = "SPIC_ZD_CMS_Blade"
         "store_file" : True,    # modelId = "SPIC_ZD_CMS_Blade"
         'threshold': {}
     }

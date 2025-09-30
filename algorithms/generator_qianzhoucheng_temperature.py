@@ -27,7 +27,7 @@ need_all_turbines = algConfig['generator_qianzhoucheng_temperature']['need_all_t
 store_file = algConfig['generator_qianzhoucheng_temperature']['store_file']
 
 def wash_data(pn_data: DataFrame, ratedPower):
-    # temp_data = pn_data[ai_points + di_points+general_points]
+        # temp_data = pn_data[ai_points + di_points+general_points]
     # final_df = wash_data_mechanization_new(temp_data, ratedPower)
     # # 处理空数据
     # final_df.fillna(method='ffill', axis=0, inplace=True)
@@ -54,7 +54,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     # 模型推理
     pn_data['WGEN.TemGenDriEnd_predict'] = predict_result(pn_data, assetId)
     # 阈值判断
-    threValue = 5
+    threValue = 100
     pn_data['result'] = np.abs(pn_data['WGEN.TemGenDriEnd'] - pn_data['WGEN.TemGenDriEnd_predict']) > threValue
     pn_data = pn_data.sort_index()
     

@@ -127,8 +127,8 @@ async def _do_execute(multi_algorithms, algorithms_configs, list_names, mainLog)
     #日志配置
     director = os.path.dirname(os.path.abspath(__file__))
     if len(algorithms_configs[list(algorithms_configs.keys())[0]]["executeTime"]) > 0:
-            prefix = "当前任务调度周期量级"
-            prefix = prefix + algorithms_configs[list(algorithms_configs.keys())[0]]["executeTime"]
+        prefix = "当前任务调度周期量级"
+        prefix = prefix + algorithms_configs[list(algorithms_configs.keys())[0]]["executeTime"]
     else:
         prefix = "当前任务为网页请求"
     format = f'[{prefix}]: - %(asctime)s - %(levelname)s - %(message)s' 

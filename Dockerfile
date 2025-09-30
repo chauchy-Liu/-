@@ -13,10 +13,8 @@ RUN echo "==> Install..."  && \
     apt-get update && \
     apt-get install -y python3-pip libgomp1 gcc && \
     pip3 install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade pip && \
-    # pip3 install -i http://pypi.mirrors.ustc.edu.cn/simple --no-cache-dir --upgrade pip && \
     pip3 install -i https://mirrors.aliyun.com/pypi/simple gunicorn gevent && \
     pip3 install --no-cache-dir -r /src/requirements.txt -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com && \
-    # pip3 install --no-cache-dir -r /src/requirements.txt -i http://pypi.mirrors.ustc.edu.cn/simple --trusted-host pypi.mirrors.ustc.edu.cn && \
     echo "==> Clean up..."  && \
     apt-get clean  && \
     rm -rf /var/lib/apt/lists/*  && \

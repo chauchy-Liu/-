@@ -33,7 +33,7 @@ def predict_result(pn_data: DataFrame):
 async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algorithms_config):
     assetId = Turbine_attr['mdmId']
     # 阈值判断
-    threValue = 10
+    threValue = 100
     pn_data['result'] = ((np.abs(pn_data['WROT.PtCapTemBl1'] - pn_data['WROT.PtCapTemBl2']) >= threValue) & (np.abs(pn_data['WROT.VolB1Cap'] - pn_data['WROT.VolB2Cap'])/pn_data['WROT.VolB1Cap']) > 0.2) | ((np.abs(pn_data['WROT.PtCapTemBl1'] - pn_data['WROT.PtCapTemBl3']) >= threValue) & (np.abs(pn_data['WROT.VolB1Cap'] - pn_data['WROT.VolB3Cap'])/pn_data['WROT.VolB1Cap']) > 0.2) | ((np.abs(pn_data['WROT.PtCapTemBl3'] - pn_data['WROT.PtCapTemBl2']) >= threValue) & (np.abs(pn_data['WROT.VolB3Cap'] - pn_data['WROT.VolB2Cap'])/pn_data['WROT.VolB3Cap']) > 0.2)
 
 

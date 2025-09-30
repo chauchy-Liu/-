@@ -33,7 +33,7 @@ def wash_data(pn_data: DataFrame, ratedPower):
     # final_df.fillna(method='ffill', axis=0, inplace=True)
     # final_df.fillna(method='bfill', axis=0, inplace=True)
     # return final_df, ''   
-    temp_data = pn_data[ai_points + di_points+general_points]
+    temp_data = pn_data[ai_points + di_points+general_points] 
     temp_data = wash_data_for_train(temp_data, ratedPower)
     if temp_data[temp_data['clear'] == 2].shape[0] > 0:
         return temp_data[temp_data['clear'] == 2], ''
@@ -54,7 +54,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     # 模型推理
     pn_data['WGEN.TemGenNonDE_predict'] = predict_result(pn_data, assetId)
     # 阈值判断
-    threValue = 5
+    threValue = 100
     pn_data['result'] = np.abs(pn_data['WGEN.TemGenNonDE'] - pn_data['WGEN.TemGenNonDE_predict']) > threValue
     pn_data = pn_data.sort_index()
 

@@ -30,13 +30,6 @@ import utils.time_util as time_util
 import asyncio
 from scipy import signal
 from configs.config import algConfig, state, Wind_Farm
-import random
-import matplotlib
-
-print(matplotlib.get_backend())
-# plt.switch_backend('TkAgg')
-# matplotlib.interactive(True)
-# plt.ion()
 
 name = algConfig['pianhang_duifeng_buzheng']['name']#'偏航对风不正'
 # 把所需测点定义到每个算法里
@@ -142,21 +135,14 @@ def thresholdfun_orig(data_,threshold):
         temp_all = pd.concat([temp_all,temp_new])
     return temp_all
 
-def data_clear(data_,Pitch_Min, power_rate,speed_max,speed_min,rotor,altitude,state):
+def data_clear(data_,power_rate,speed_max,speed_min,rotor,altitude,state):
     
     #res_df = data[(data['statel']==90002)&(data['state']==state)]
     
     #########三一机组
-    res_df = data_[data_['WTUR.TurbineSts']==state] #(data_['WTUR.TurbineAIStatus']==90002)&(|(data_['WTUR.TurbineSts']==120))
-    pwrat_range = np.arange(0,power_rate*1.2+10,20.0)
-    pwrat_bin = np.arange(10,power_rate*1.2,20.0)
-    res_df['pwbin'] = pd.cut(res_df['WGEN.GenActivePW'],pwrat_range,labels=pwrat_bin)
-    res_df['pitchlim'] = Pitch_Min
-    for i in range(len(pwrat_bin)):
-        res_df.loc[(res_df['pwbin']==pwrat_bin[i]),'pitchlim'] = np.mean(res_df[(res_df['WGEN.GenActivePW']>=pwrat_bin[i]-10)&(res_df['WGEN.GenActivePW']<pwrat_bin[i]+10)]['WROT.Blade1Position'].nsmallest(5))
-
+    res_df = data_[(data_['WTUR.TurbineAIStatus']==90002)&((data_['WTUR.TurbineSts']==state)|(data_['WTUR.TurbineSts']==120))]
     res_df = res_df[abs(res_df['WNAC.WindVaneDirection'])<=35.0]
-    res_df = res_df[res_df['WNAC.WindSpeed']<=50.0]
+     
     res_df = res_df[(res_df['WGEN.GenActivePW']>0) & (res_df['WGEN.GenActivePW']<power_rate*0.9)]
     res_df = res_df[(res_df['WGEN.GenSpd']>=speed_min*0.95) & (res_df['WGEN.GenSpd']<=speed_max*1.1)]
     #res_df = res_df[(res_df['pwrat']<=0.8*power_rate) & (res_df['pitch1']<=2.5)]
@@ -166,8 +152,7 @@ def data_clear(data_,Pitch_Min, power_rate,speed_max,speed_min,rotor,altitude,st
     
     res_df = thresholdfun_orig(res_df,3)
     #thresholdfun_orig1(data,neighbors_num=50)
-    res_df = res_df[(res_df['WROT.Blade1Position']<=2.0+res_df['pitchlim'])]
-    # res_df = res_df[(res_df['WROT.Blade1Position']<=2.5)]
+    res_df = res_df[(res_df['WROT.Blade1Position']<=2.5)]
     '''
     fig = plt.figure(figsize=(10,8),dpi=100)  
     plt.title(str(turbine_name))    
@@ -188,7 +173,7 @@ def Pwrat_Rate_loss(data_,Pwrat_Rate):
         False
 
 
-def winddir_err_before_new(data_,dirbin,windbin2,dirbin1,windbin1, request_num, order): #,path,turbine_name
+def winddir_err_before_new(data_,dirbin,windbin2,dirbin1,windbin1, request_num): #,path,turbine_name
     
     idx = pd.IndexSlice
     yaw_err = pd.DataFrame() 
@@ -213,7 +198,7 @@ def winddir_err_before_new(data_,dirbin,windbin2,dirbin1,windbin1, request_num, 
             
             clf = LocalOutlierFactor(n_neighbors=50)
             #clf = IsolationForest(n_estimators=50,contamination=0.25,random_state=1)
-            y_pred = clf.fit_predict(yaw_err_temp) #正常点预测为1，异常点预测为-1
+            y_pred = clf.fit_predict(yaw_err_temp)
             yaw_err_temp['y_pred'] = y_pred
             
             # fig = plt.figure(figsize=(10,8),dpi=100)  
@@ -232,7 +217,7 @@ def winddir_err_before_new(data_,dirbin,windbin2,dirbin1,windbin1, request_num, 
     
     #clf = OneClassSVM(nu=0.25,gamma=0.25)
     #clf = LocalOutlierFactor(n_neighbors=200)
-    clf = IsolationForest(n_estimators=50,contamination=0.3,random_state=1) ##正常点预测为1，异常点预测为-1
+    clf = IsolationForest(n_estimators=50,contamination=0.3,random_state=1)
     y_pred = clf.fit_predict(X_train)
     X_train['y_pred'] = y_pred
     X_train_last = X_train[X_train['y_pred']==1]
@@ -264,31 +249,27 @@ def winddir_err_before_new(data_,dirbin,windbin2,dirbin1,windbin1, request_num, 
         err_result_get = err_result
     else:
         err_result_get = 0.0001
-        if order == 2:
-            random_number = random.uniform(-4.9, 4.9)
-            quadY = -100*(X_train_mean['WNAC.WindVaneDirection'].values.reshape(-1, 1)-random_number)**2
-            quadY = min_max_scaler.fit_transform(quadY)
-            X_train_mean['pwrat_scaler_minmax'] = X_train_mean['pwrat_scaler_minmax'].values.reshape(-1, 1)
-            X_train_mean['pwrat_scaler_minmax'] = X_train_mean['pwrat_scaler_minmax']*0.3 + quadY.reshape(-1)
-
-            train_minmax = min_max_scaler.fit_transform(X_train_mean['pwrat_scaler_minmax'].values.reshape(-1, 1))
-            X_train_mean['pwrat_scaler_minmax'] = train_minmax
-                    
-            poly_model = make_pipeline(PolynomialFeatures(2),LinearRegression())#二次方拟合
-            #poly_model.fit(np.cos(aa[:,np.newaxis]*0.01745),yaw_err_temp['pwrat_f'])#cos拟合
-            #yfit = poly_model.predict(np.cos(aa[:,np.newaxis]*0.01745))
-            poly_model.fit((X_train_mean.loc[:,'WNAC.WindVaneDirection'].values.reshape(-1,1)*0.0175),X_train_mean.loc[:,'pwrat_scaler_minmax'])
-            yfit = poly_model.predict((np.unique(X_train_mean['WNAC.WindVaneDirection']).reshape(-1,1)*0.0175))
-            
-            #poly_model.fit(aa.reshape(-1,1)*0.0175,yaw_err_minmax.loc[:,'pwrat_scaler'])
-            #yfit1 = poly_model.predict(dirbin.reshape(-1,1)*0.0175)
-                
-            err_result = float('%.2f' %np.unique(X_train_mean['WNAC.WindVaneDirection'])[np.argmax(yfit)])
-            err_result_min = float('%.2f' %np.unique(X_train_mean['WNAC.WindVaneDirection'])[np.argmin(yfit)])
-            if (np.max(yfit)-np.min(yfit))>0.35*(1 - np.cos(3.14159*(err_result_min - err_result)/180.0)) and ((yfit[0]+yfit[-1])/2<yfit[yfit.shape[0]//2]):
-                err_result_get = err_result
-
-
+    # plt.rcParams['axes.unicode_minus'] = False
+    # mpl.rcParams['font.sans-serif'] = ['SimHei'] 
+    # fig = plt.figure(figsize=(10,8),dpi=100)
+    # plt.subplot(1,1,1)    
+    # plt.title(str(turbine_name)+'对风偏差角度：'+str('%.1f' %err_result_get)+'，理论损失电量：'+str('{:.2%}'.format((1 - np.cos(3.14159*err_result_get/180.0)**2)*0.75)),fontsize=16)
+    # with plt.style.context('ggplot'):            
+    #     plt.scatter(X_train_mean['wdir0'],X_train_mean['pwrat_scaler_minmax'],color='blue',s=10)
+    #     #plt.scatter(yaw_err_temp['wdir0cut1'],yaw_err_temp['pwrat','post'],color='red',s=20)
+    #     #color使用标准色条，c使用变量赋值
+    #     plt.plot(np.unique(X_train_mean['wdir0']),yfit,color='red')
+    #     #plt.plot(dirbin,yfit1,color='green')
+    #     plt.plot(np.full((len(X_train_mean),1),np.unique(X_train_mean['wdir0'])[np.argmax(yfit)]),X_train_mean['pwrat_scaler_minmax'],'--',color='black')
+    #     #plt.plot(np.full((len(aa),1),dirbin[np.argmax(yfit1)]),yaw_err_minmax['pwrat_scaler'],'--',color='green')
+    #     plt.grid()
+    #     plt.xlabel('偏航偏差角度(°)',fontsize=14)
+    #     plt.ylabel('发电性能',fontsize=14)
+    #     #plt.text(0,min(train_minmax),str('%.1f' %windbin2[i]+'m/s'))
+    #     #plt.colorbar()
+    # plt.subplots_adjust(top=0.95,bottom=0.08,left=0.08,right=0.95,hspace =0.10, wspace =0.1) #调整边距      
+    # #plt.margins(0,0)
+    # fig.savefig(str(path+'/'+str(turbine_name)+'_yawerror.png'),dpi=100)
         
     return err_result_get, X_train_mean, yfit #, str(path+'/'+str(turbine_name)+'_yawerror.png')
 
@@ -298,7 +279,7 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
     global vane_nan_num
     assetId = Turbine_attr['mdmId']
     rotor_radius = Turbine_attr['rotorDiameter']*0.5
-    # state = 6 #江西
+    # state = 64 #吉电
     altitude = Turbine_attr['altitude']
     dirbin = np.arange(-35.0,35.0,0.2)
     dirbin1 = np.arange(-35.1,35.1,0.2) 
@@ -309,7 +290,6 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
     Pwrat_Rate = get_data.Pwrat_Rate
     Rotspd_Rate = get_data.Rotspd_Rate
     Rotspd_Connect = get_data.Rotspd_Connect
-    Pitch_Min = get_data.minPitch
     turbine_err_all = {}#pd.DataFrame()
     turbine_err_all['power_rate_err'] = 0  #额定功率异常
     turbine_err_all['torque_kopt_err'] = 0 #最佳Cp段转矩控制异常
@@ -332,23 +312,23 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
         medfilt_num = 1
         while restart and request_num < 6:
             if request_num == 0:
-                res_df = data_clear(Df_all_filter,Pitch_Min, Pwrat_Rate,Rotspd_Rate,Rotspd_Connect,rotor_radius,altitude,state)#剔除数据后数据量太少无法有效拟合
+                res_df = data_clear(Df_all_filter,Pwrat_Rate,Rotspd_Rate,Rotspd_Connect,rotor_radius,altitude,state)#剔除数据后数据量太少无法有效拟合
                 if len(res_df)<100:
                     res_df = Df_all_filter
                 #res_df = data
-                err_result, X_train_mean, yfit = winddir_err_before_new(res_df,dirbin,windbin2,dirbin1,windbin1,request_num, 1)
+                err_result, X_train_mean, yfit = winddir_err_before_new(res_df,dirbin,windbin2,dirbin1,windbin1,request_num)
                 # err_result_all.loc[num,'turbine'] = turbine_name
                 # err_result_all.loc[num,'yawerr'] = err_result
                 # err_result_all.loc[num,'loss'] = (1 - np.cos(3.14159*err_result/180.0)**2)*0.75
             if err_result == 0.0001:
                 Df_all_filter = Df_all.copy()
                 #多次滤波
-                Df_all_filter['WNAC.WindVaneDirection'] = pass_filter(Df_all['WNAC.WindVaneDirection'],0.3,1,11,0.1,1,2)
+                Df_all_filter['WNAC.WindVaneDirection'] = pass_filter(Df_all['WNAC.WindVaneDirection'],0.5,5,11,0.5,1,2)
 
-                res_df = data_clear(Df_all_filter,Pitch_Min,Pwrat_Rate,Rotspd_Rate,Rotspd_Connect,rotor_radius,altitude,state)
+                res_df = data_clear(Df_all_filter,Pwrat_Rate,Rotspd_Rate,Rotspd_Connect,rotor_radius,altitude,state)
                 if len(res_df)<100:
                     res_df = Df_all_filter
-                err_result, X_train_mean, yfit = winddir_err_before_new(res_df,dirbin,windbin2,dirbin1,windbin1,request_num, 2)
+                err_result, X_train_mean, yfit = winddir_err_before_new(res_df,dirbin,windbin2,dirbin1,windbin1,request_num)
 
                 medfilt_num = medfilt_num + 2
                 request_num = request_num + 1
@@ -362,28 +342,16 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
         #     turbine_err_all['yaw_duifeng_err'] = -999999
         #     turbine_err_all['yaw_duifeng_loss'] = -999999
     else:         
-        request_num = 0
-        err_result, X_train_mean, yfit = winddir_err_before_new(Df_all,dirbin,windbin2,dirbin1,windbin1,request_num, 3)
+        err_result, X_train_mean, yfit = winddir_err_before_new(Df_all,dirbin,windbin2,dirbin1,windbin1)
         
 
-    # if np.abs(err_result) > 5:
-    # plt.figure()
-    # plt.scatter(X_train_mean.loc[:,'WNAC.WindVaneDirection'],X_train_mean.loc[:,'pwrat_scaler_minmax'],c='b',s=20)
-    # plt.plot(np.unique(X_train_mean['WNAC.WindVaneDirection']),yfit,color='g')
-    # plt.plot([round(np.unique(X_train_mean['WNAC.WindVaneDirection'])[np.argmax(yfit)],4), round(np.unique(X_train_mean['WNAC.WindVaneDirection'])[np.argmax(yfit)],4)], [round(X_train_mean.loc[:,'pwrat_scaler_minmax'].min(),4), round(X_train_mean.loc[:,'pwrat_scaler_minmax'].max(),4)], c='r')   
-    # plt.savefig(str(assetId)+'_yawerror.png')
-    # plt.close()
-    # X_train_mean['yfit'] = yfit
-    # X_train_mean.to_csv(str(assetId)+'_yawerror.csv', index=True)
-
-
-    #数据展示
+    # if np.abs(err_result) < 5:
+        #数据展示
     x = [str(round(num,4)) for num in list(X_train_mean.loc[:,'WNAC.WindVaneDirection'])]
     y = [str(round(num,4)) for num in list(X_train_mean.loc[:,'pwrat_scaler_minmax'])]
     pre_y = [str(round(num,4)) for num in list(yfit)] 
     data1 = pd.DataFrame({'x': x, 'y': y}).to_dict('records')
     pre_data = pd.DataFrame({'x': x, 'y': pre_y}).to_dict('records')
-
 
     Figs = []
     curves1 = []
@@ -425,9 +393,6 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
     
 
 
-
-
-        
     
     
 

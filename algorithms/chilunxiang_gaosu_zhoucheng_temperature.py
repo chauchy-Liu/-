@@ -44,7 +44,7 @@ def predict_result(pn_data: DataFrame, assetId):
     # 加载模型
     model = model_util.load_model(config.Wind_Farm, 'chilunxiang_gaosu_zhoucheng_temperature', assetId,'chilunxiang_gaosu_zhoucheng_temperature')
     # 预测健康温度 并判断是否告警
-    y_predict = model.predict(pn_data[['WGEN.GenActivePW','WNAC.TemNacelle','WGEN.GenSpd']]) #江西保留
+    y_predict = model.predict(pn_data[['WGEN.GenActivePW','WNAC.TemNacelle','WTRM.TemGeaOil','WGEN.GenSpd']])
     return y_predict
 
 
@@ -53,7 +53,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     # 模型推理
     pn_data['WTRM.TemGeaMSND_predict'] = predict_result(pn_data, assetId)
     # 阈值判断
-    threValue = 5
+    threValue = 100
     pn_data['result'] = np.abs(pn_data['WTRM.TemGeaMSND'] - pn_data['WTRM.TemGeaMSND_predict']) > threValue
     pn_data = pn_data.sort_index()
 
@@ -78,7 +78,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     statementException = f'在风机运行正常时采样训练拟合后给出的趋势预测温度和实际温度偏差大于5'
     statementNormal = f'在风机运行正常时采样训练拟合后给出的趋势预测温度和实际温度偏差小于等于5'
     # 生成告警
-    data, statement, alarming =  alarm.generateAlarm(name, 'chilunxiang_gaosu_zhoucheng_temperature', 'WTRM.TemGeaMSND', pn_data, error_data_time_duration, resample_interval, assetId, threValue, statementException, statementNormal)
+    data, statement, alarming =  alarm.generateAlarm(name, 'chilunxiang_gaosu_zhoucheng_temperature', 'WTRM.TemMainBearing', pn_data, error_data_time_duration, resample_interval, assetId, threValue, statementException, statementNormal, idMaps)
     return data, statement, Figs, 0,1 # alarming, 0
 
 

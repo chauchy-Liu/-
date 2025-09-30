@@ -56,7 +56,7 @@ async def judge_model(pn_data: DataFrame, Turbine_attr, threshold, idMaps,algori
     assetId = Turbine_attr['mdmId']
     # 模型推理
     pn_data['WTRM.TemGeaOil_predict'] = predict_result(pn_data, assetId)
-    threValue = 5
+    threValue = 100
     # 阈值判断
     pn_data['result'] = np.abs(pn_data['WTRM.TemGeaOil'] - pn_data['WTRM.TemGeaOil_predict']) > threValue
     pn_data = pn_data.sort_index()

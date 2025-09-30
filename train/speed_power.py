@@ -119,8 +119,8 @@ async def main():
     algName = 'capacity_reduction'
     algorithm = importlib.import_module('algorithms.'+algName)
     Input_farmIds = config.Wind_Farm
-    Input_startTime = datetime.strptime('2024-02-01 00:00:00', '%Y-%m-%d %H:%M:%S')
-    Input_endTime = datetime.strptime('2024-04-25 00:00:00', '%Y-%m-%d %H:%M:%S')
+    Input_startTime = datetime.strptime('2024-05-01 00:00:00', '%Y-%m-%d %H:%M:%S')
+    Input_endTime = datetime.strptime('2024-08-13 00:00:00', '%Y-%m-%d %H:%M:%S')
     extraModelName = config.extraModelName
     algorithms_configs = {}
     algorithms_configs[algName] = {
@@ -137,8 +137,8 @@ async def main():
     # points = ['WNAC.WindSpeed','WGEN.GenActivePW', 'WGEN.GenSpd', 'WROT.Blade1Position']
     name = 'speed_power' #algorithm.__name__.split('.')[-1]
     df_wind_turbine = await getWindTurbines(Input_farmIds)
-    turbineNameList = ["13#","14#","15#","16#","17#"]
-    df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
+    # turbineNameList = ["13#","14#","15#","16#","17#"]
+    # df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
     assetIds = df_wind_turbine['mdmId']
     multiModelAssetIds = await getWindTurbinesNode(assetIds, algorithms_configs, nameConstrain=extraModelName) #一个风机可能会有多个模型资产Id
     algorithms_configs[algName]['resampleTime'] = algorithm.resample_interval
@@ -167,6 +167,13 @@ async def main():
         finalDf = wash_data_for_train(Df_all, ratedPower)
         finalDf = finalDf[finalDf['clear'] <= 5]
         if finalDf.empty == True:
+            #撤销重命名
+            if len(algorithm.ai_rename) != 0:
+                for key, evalue in algorithm.ai_rename.items():
+                    if evalue in Df_all.columns.tolist():
+                        if evalue in algorithm.ai_points:
+                            index_key = algorithm.ai_points.index(evalue)
+                            algorithm.ai_points[index_key] = key
             continue
         # plt.scatter(x=finalDf['WNAC.WindSpeed'], y=finalDf['WGEN.GenActivePW'], s=1)
         # plt.show()
@@ -214,7 +221,7 @@ async def main():
                     if evalue in algorithm.ai_points:
                         index_key = algorithm.ai_points.index(evalue)
                         algorithm.ai_points[index_key] = key
-        
+
         # 持久化
         # os.makedirs(os.path.join('model', assetId), exist_ok=True)
         if os.path.exists(os.path.dirname(os.path.join('model',config.Wind_Farm, name, assetId, 'speed_power.model'))):

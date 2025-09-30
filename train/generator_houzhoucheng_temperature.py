@@ -98,8 +98,8 @@ async def main():
     }
     
     df_wind_turbine = await getWindTurbines(Input_farmIds)
-    turbineNameList = ["13#","14#","15#","16#","17#"]
-    df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
+    # turbineNameList = ["13#","14#","15#","16#","17#"]
+    # df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
     assetIds = df_wind_turbine['mdmId']
     multiModelAssetIds = await getWindTurbinesNode(assetIds, algorithms_configs, nameConstrain=extraModelName) #一个风机可能会有多个模型资产Id
     algorithms_configs[algName]['resampleTime'] = algorithm.resample_interval
@@ -142,7 +142,7 @@ async def main():
         # plt.show()
 
         # 拟合 随机森林
-        X = final_df[['WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WGEN.GenSpd']]
+        X = final_df[['WNAC.WindSpeed','WGEN.GenActivePW','WNAC.TemNacelle','WGEN.GenSpd','WNAC.TemOut']]
         y = final_df['WGEN.TemGenNonDE']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
         # rf.fit(X_train, y_train)  

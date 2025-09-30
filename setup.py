@@ -10,7 +10,7 @@ setupfile = os.path.join(os.path.abspath('.'), __file__)
 build_dir = "build"
 build_tmp_dir = build_dir + "/temp"
 
-filter_dir_set = {'dist', 'build', 'data', 'configs', 'app', 'train', 'model', 'poseidon', 'utils', 'result'}
+filter_dir_set = {'dist', 'build', 'data', 'configs', 'app', 'train', 'model', 'poseidon', 'utils'}
 
 except_files = {
     __file__,
@@ -22,12 +22,7 @@ except_files = {
     'enos_get_data.py',
     'test.py',
     '.gitignore',
-    '__init__.py',
-    'test.ipynb',
-    'TOAT.pdf',
-    'TOTT.pdf',
-    'backtest.pdf',
-    'predict-actual.pdf',
+    '__init__.py'
 }
 
 
@@ -125,11 +120,6 @@ if os.path.exists(build_dir):
 if os.path.exists('logs'):
     shutil.rmtree('logs')
 os.mkdir('logs')
-
-# 删除result
-if os.path.exists('result'):
-    shutil.rmtree('result')
-os.mkdir('result')
 
 # 获取py列表
 module_set = set(getpy(basepath=currdir, parentpath=parentpath))

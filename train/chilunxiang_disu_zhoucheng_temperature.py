@@ -37,7 +37,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent)) 
 # 导包是基于当前工作目录的，如果直接运行此文件，此文件相当于主脚本，找不到data模块，所以要添加到sys.path中
 # 项目的所有模块的导包，都是基于主脚本工作目录的
-from data.get_data import getDataCommon, getWindTurbines, wash_data_for_train, getWindTurbinesNode, getDataForMultiAlgorithms
+from data.get_data_async import getDataCommon, getWindTurbines, wash_data_for_train, getWindTurbinesNode, getDataForMultiAlgorithms
 from poseidon import poseidon
 import os
 from configs import config
@@ -88,14 +88,14 @@ def preProcessData(Df_all):
 
 
 # if __name__=='__main__':
-async def main():    
+async def main():
     import importlib
     algName = 'chilunxiang_disu_zhoucheng_temperature'
     algorithm = importlib.import_module('algorithms.'+algName)    
     name = algorithm.__name__.split('.')[-1]
     Input_farmIds = config.Wind_Farm
-    Input_startTime = datetime.strptime('2024-05-01 00:00:00', '%Y-%m-%d %H:%M:%S')
-    Input_endTime = datetime.strptime('2024-08-14 00:00:00', '%Y-%m-%d %H:%M:%S')
+    Input_startTime = datetime.strptime('2023-11-07 00:00:00', '%Y-%m-%d %H:%M:%S')
+    Input_endTime = datetime.strptime('2024-11-07 00:00:00', '%Y-%m-%d %H:%M:%S')
     extraModelName = config.extraModelName
     algorithms_configs = {}
     algorithms_configs[algName] = {
@@ -110,8 +110,8 @@ async def main():
     }
     
     df_wind_turbine = await getWindTurbines(Input_farmIds)
-    turbineNameList = ["13#","14#","15#","16#","17#"]
-    df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
+    # turbineNameList = ["13#","14#","15#","16#","17#"]
+    # df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
     assetIds = df_wind_turbine['mdmId']
     multiModelAssetIds = await getWindTurbinesNode(assetIds, algorithms_configs, nameConstrain=extraModelName) #一个风机可能会有多个模型资产Id
     algorithms_configs[algName]['resampleTime'] = algorithm.resample_interval
@@ -127,7 +127,8 @@ async def main():
         algorithms_configs[algName]['param_assetIds'] = [assetId]
         algorithms_configs[algName]['param_turbine_num'] = [row['name']]
 
-        if os.path.exists(os.path.join('model',config.Wind_Farm, name,  assetId, 'chilunxiang_disu_zhoucheng_temperature.model')):
+        # if os.path.exists(os.path.join('model',config.Wind_Farm, name,  assetId, 'chilunxiang_disu_zhoucheng_temperature.model')):
+        if os.path.exists(os.path.join('model',config.Wind_Farm, name, 'chilunxiang_disu_zhoucheng_temperature.model')):
             continue
 
         algorithmData = await getDataForMultiAlgorithms(algorithms_configs)
@@ -137,7 +138,7 @@ async def main():
         # 数据清洗
         final_df = wash_data_for_train(Df_all, ratedPower)
         final_df = final_df[final_df['clear'] == 2]
-        final_df = final_df.dropna(subset=['WROT.Blade1Position','WNAC.WindSpeed','WNAC.TemNacelle', 'WGEN.GenSpd', 'WGEN.GenActivePW', 'WTRM.TemGeaLSND'])
+        final_df = final_df.dropna(subset=['WROT.Blade1Position','WNAC.WindSpeed','WNAC.TemNacelle', 'WGEN.GenSpd', 'WGEN.GenActivePW', 'WTRM.TemGeaLSND','WNAC.TemOut'])
         # 拟合 随机森林 SVM
         if final_df.empty == True:
             #撤销重命名
@@ -154,9 +155,15 @@ async def main():
         # plt.xlabel('风速(m/s)',fontsize=14)
         # plt.ylabel('功率(kW)',fontsize=14)
         # plt.show()
-
-        X = final_df[['WGEN.GenActivePW','WNAC.TemNacelle','WGEN.GenSpd']]
-        y = final_df['WTRM.TemMainBearing2']
+        #功率延迟，线性插值
+        laytime = 10
+        shift_power_name = []
+        for i in range(10):
+            final_df['WGEN.GenActivePW'+str(i+1)] = final_df['WGEN.GenActivePW'].shift(periods=i+1)
+            final_df['WGEN.GenActivePW'+str(i+1)] = final_df['WGEN.GenActivePW'+str(i+1)].interpolate(method='linear')
+            shift_power_name.append('WGEN.GenActivePW'+str(i+1))
+        X = final_df[['WGEN.GenActivePW','WNAC.TemNacelle','WGEN.GenSpd','WNAC.TemOut']+shift_power_name]
+        y = final_df['WTRM.TemGeaLSND']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
         # rf.fit(X_train, y_train)  
         # y_predict = rf.predict(X_test)
@@ -188,13 +195,19 @@ async def main():
                         algorithm.ai_points[index_key] = key
 
         import joblib
-        if os.path.exists(os.path.dirname(os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model'))):
+        # if os.path.exists(os.path.dirname(os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model'))):
+        #     pass
+        # else:
+        #     os.makedirs(os.path.dirname(os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model')))
+        if os.path.exists(os.path.dirname(os.path.join('model',config.Wind_Farm, name,'chilunxiang_disu_zhoucheng_temperature.model'))):
             pass
         else:
-            os.makedirs(os.path.dirname(os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model')))
-        joblib.dump(gs.best_estimator_, os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model'))
-        joblib.dump(np.sqrt(mse), os.path.join('model',config.Wind_Farm, name, assetId, 'error'+'.model'))
-        
+            os.makedirs(os.path.dirname(os.path.join('model',config.Wind_Farm,  name,'chilunxiang_disu_zhoucheng_temperature.model')))
+        # joblib.dump(gs.best_estimator_, os.path.join('model',config.Wind_Farm, name, assetId, 'chilunxiang_disu_zhoucheng_temperature.model'))
+        # joblib.dump(np.sqrt(mse), os.path.join('model',config.Wind_Farm, name, assetId, 'error'+'.model'))
+        joblib.dump(gs.best_estimator_, os.path.join('model',config.Wind_Farm,  name,'chilunxiang_disu_zhoucheng_temperature.model'))
+        joblib.dump(np.sqrt(mse), os.path.join('model',config.Wind_Farm, name, 'error'+'.model'))
+       
         
         # # final_df.corr()['WTRM.TemGeaMSDE'].sort_values(ascending=False)
         # # 试验线性回归

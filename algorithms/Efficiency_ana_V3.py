@@ -1,7 +1,7 @@
 from alarms import alarm
 from pandas import DataFrame
 from configs import config
-from configs.faultcode_hadian import fault as fault_code
+from configs.faultcode_SANY import fault as fault_code
 from sklearn import preprocessing
 from sklearn.mixture import BayesianGaussianMixture
 from sklearn.neighbors import LocalOutlierFactor

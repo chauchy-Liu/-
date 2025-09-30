@@ -32,7 +32,7 @@ if not data_logger.handlers:
     # console_handler = logging.StreamHandler()
     # console_handler.setFormatter(formatter)
     # alarm_file_handler = TimedRotatingFileHandler('logs/alarm.log', when='midnight', interval=1, backupCount=30)
-    data_file_handler = RotatingFileHandler(filename=os.path.join("logs","data"+".log"), mode='a', maxBytes=5*1024**2, backupCount=3)
+    data_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join("logs","data"+".log"), mode='a', maxBytes=5*1024**2, backupCount=3)
     data_file_handler.setFormatter(formatter)
     data_logger.setLevel(logging.INFO)
     # data_logger.addHandler(console_handler)
@@ -145,7 +145,7 @@ async def getRawData(startTime, endTime, points, assetIds):
               "itemFormat": "1",
               "type": "ai_normalized",  # ai,ai_normalized,di,pi,generic
               "boundaryType": "sample",
-              "interval": 600,
+              "interval": 60,
               "interpolation": "near",
               "pageSize": "20000"}
 
@@ -172,7 +172,7 @@ async def getGeneralData(algorithmName: str, startTime, endTime, assetId: str, p
     # ResponsePoint = poseidon.urlopen(AccessKey, SecretKey, Url_raw, params)
     ResponsePoint = await asyncio.to_thread(poseidon.urlopen,AccessKey, SecretKey, Url_raw, params)
     DfTemp = pd.DataFrame()
-    if len(ResponsePoint['data']['items']) > 0:
+    if ResponsePoint and ResponsePoint['data'] and len(ResponsePoint['data']['items']) > 0:
         DfTemp = pd.DataFrame(ResponsePoint['data']['items'])
         DfTemp.set_index('localtime', inplace=True)
         DfTemp.index = pd.to_datetime(DfTemp.index)
@@ -228,7 +228,7 @@ async def getDiData(algorithmName: str, startTime, endTime, assetId: str, points
     # ResponsePoint = poseidon.urlopen(AccessKey, SecretKey, Url_di, params)
     ResponsePoint = await asyncio.to_thread(poseidon.urlopen,AccessKey, SecretKey, Url_di, params)
     DfTemp = pd.DataFrame()
-    if len(ResponsePoint['data']['items']) > 0:
+    if ResponsePoint and ResponsePoint['data'] and  len(ResponsePoint['data']['items']) > 0:
         DfTemp = pd.DataFrame(ResponsePoint['data']['items'])
         DfTemp.set_index('localtime', inplace=True)
         DfTemp.index = pd.to_datetime(DfTemp.index)

@@ -143,8 +143,8 @@ def generateAlarm(name, modelCode, pnCode, data_df_in, continuous_time, sample_i
         else:
             pass
         alarming = 0
-        return (pd.DataFrame(), statementNormal, alarming)
-        
+        return (pd.DataFrame(), statementNormal, alarming)    
+    
 def generateAlarmFit(name, pn_data, fit_fun,modelCode, measure_name, threshold, sample_interval, assetId,statementException='', statementNormal=''):
     # 将时间转换为日期偏移(时间戳)，以便进行线性拟合
     interval_value, interval_unit = time_util.split_time_delta(sample_interval)
@@ -182,7 +182,7 @@ def generateAlarmFit(name, pn_data, fit_fun,modelCode, measure_name, threshold, 
 
 
     return data1, data2, data3, data4
-    
+
 def generateAlarmTrend(name, data_df, measure_name, threshold, sample_interval, assetId,statementException='', statementNormal=''):
     # 将时间转换为日期偏移(时间戳)，以便进行线性拟合
     interval_value, interval_unit = time_util.split_time_delta(sample_interval)

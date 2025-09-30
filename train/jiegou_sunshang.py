@@ -92,7 +92,7 @@ async def main():
     name = algorithm.__name__.split('.')[-1]
     Input_farmIds = config.Wind_Farm
     Input_startTime = datetime.strptime('2024-07-08 00:00:00', '%Y-%m-%d %H:%M:%S')
-    Input_endTime = datetime.strptime('2024-07-25 00:00:00', '%Y-%m-%d %H:%M:%S')
+    Input_endTime = datetime.strptime('2024-08-13 00:00:00', '%Y-%m-%d %H:%M:%S')
     extraModelName = config.extraModelName
     algorithms_configs = {}
     algorithms_configs[algName] = {
@@ -107,7 +107,7 @@ async def main():
     }
 
     df_wind_turbine = await getWindTurbines(Input_farmIds)
-    turbineNameList = ["17#"]
+    turbineNameList = ["#02"]
     df_wind_turbine = df_wind_turbine[df_wind_turbine["name"].isin(turbineNameList)]
     assetIds = df_wind_turbine['mdmId']
     multiModelAssetIds = await getWindTurbinesNode(assetIds, algorithms_configs, nameConstrain=extraModelName) #一个风机可能会有多个模型资产Id
@@ -137,6 +137,13 @@ async def main():
         final_df = wash_data_for_train(Df_all, ratedPower)
         final_df = final_df[final_df['clear'] == 2]
         if final_df.empty == True:
+            #撤销重命名
+            if len(algorithm.ai_rename) != 0:
+                for key, evalue in algorithm.ai_rename.items():
+                    if evalue in Df_all.columns.tolist():
+                        if evalue in algorithm.ai_points:
+                            index_key = algorithm.ai_points.index(evalue)
+                            algorithm.ai_points[index_key] = key
             continue
         
         # 拟合 随机森林 SVM

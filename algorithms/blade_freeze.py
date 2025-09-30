@@ -42,7 +42,7 @@ for modelKey, pointValue in private_points.items():
 
 def wash_data(pn_data: DataFrame, ratedPower):    
     # temp_data = pn_data[ai_points + di_points+general_points]
-    
+
     '''
     剔除限功率、环境温度+-5、风速低于10、桨距角<最小桨距角+2
     '''

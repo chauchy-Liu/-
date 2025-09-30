@@ -149,12 +149,12 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
     turbine_err_all['torque_rate_err'] = 0 #额定转速段转矩控制异常
     turbine_err_all['wspd_power_err'] = 0  #风速功率散点异常
     pw_df_all = pd.DataFrame()
-    
+    # df_all_clear = Df_all_m_clear[Df_all_m_clear['clear'] == 2]
     # windbinreg = np.arange(1.75,25.25,0.5)
     # windbin = np.arange(2.0,25.0,0.5)
     # pw_df_all['windbin'] = windbin
     turbine_name = assetId
-    state = 6
+    # state = 64
     # Df_all_m['windbin'] = pd.cut(Df_all_m['WNAC.WindSpeed'],windbinreg,labels=windbin)
     minPitch = get_data.minPitch
     Pwrat_Rate = get_data.Pwrat_Rate
@@ -236,15 +236,15 @@ def judge_model1(pn_data: DataFrame, assetId, threshold):
     pn_data['theory_power_transformed'] = function(pn_data['wsTransformed'])
     #逆变换
     pn_data['theory_power'] = scalorPW.inverse_transform(pn_data[['theory_power_transformed']])
-    #归一化数据
-    scalorWS = preprocessing.MinMaxScaler()
-    pn_data['wsTransformed'] = scalorWS.fit_transform(pn_data[['WNAC.WindSpeed']])
-    scalorPW = preprocessing.MinMaxScaler()
-    pn_data['pwTransformed'] = scalorPW.fit_transform(pn_data[['WGEN.GenActivePW']])
-    pn_data['theory_power_transformed'] = function(pn_data['wsTransformed'])
-    #逆变换
-    pn_data['theory_power'] = scalorPW.inverse_transform(pn_data[['theory_power_transformed']])
     pn_data['result'] = pn_data['WGEN.GenActivePW'] - pn_data['theory_power'] * 0.9 < 0
+
+
+
+
+
+
+
+
 
     #数据展示
     x = [str(tick) for tick in list(pn_data.index)]

@@ -192,7 +192,7 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
             push_alarm_self(assetId, 'WGEN.GenActivePW', statementException, 1, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), float(y2[-1]),'generator_zhuanju_kongzhi', idMaps)
 
             return data_temp, statementException, Figs, 0,1 # alarming, 0
-
+        
     temp = df_all_clear[(df_all_clear['WGEN.GenSpd']>Rotspd_Connect*1.2)&(df_all_clear['WGEN.GenSpd']<Rotspd_Rate*0.9)]
     #数据展示
     x = [str(round(tick,4)) for tick in list(temp['WGEN.GenSpd'])] #data_temp['WGEN.GenSpd']
@@ -265,7 +265,6 @@ async def judge_model(Df_all_m_clear: DataFrame, Turbine_attr, threshold, idMaps
 
 def judge_model1(pn_data: DataFrame, assetId, threshold):
     gmm = BayesianGaussianMixture(n_components=2, covariance_type="full",random_state=0,tol=0.1,reg_covar=0.02)
-    # 转矩系数
     # 转矩系数
     pn_data['kopt'] = pn_data['WGEN.GenActivePW'] / (pn_data['WGEN.GenSpd']*0.10471)**3
     xx = pn_data.loc[:,[('kopt')]].values
