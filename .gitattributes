@@ -1,0 +1,2 @@
+/configs/config.py merge=ours
+/train/*.py merge=ours

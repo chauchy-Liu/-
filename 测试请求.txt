@@ -1,0 +1,4 @@
+http://172.17.11.119:8888/wind-algorithm-model/test/execute?modelCode=[all_model]
+
+
+基于区域分割和提取轮廓特征点的漏油检测方法及系统
